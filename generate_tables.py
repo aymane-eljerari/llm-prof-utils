@@ -1,5 +1,6 @@
 import csv
 import sys
+import os
 
 # Extract command-line arguments
 quant = sys.argv[1]
@@ -14,8 +15,15 @@ table_lines = [line for line in output.splitlines() if line.startswith('|') and 
 # Split the lines into columns
 rows = [[col.strip() for col in line.split('|') if col] for line in table_lines]
 
-# Write to a CSV file
-output_filename = f'performance_results/{quant}_{split_mode}.csv'
+# Define the output directory and filename
+output_directory = '../performance_results'
+output_filename = f'{output_directory}/{quant}_{split_mode}.csv'
+
+# Check if the directory exists, and create it if it doesn't
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+# Write to the CSV file
 with open(output_filename, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerows(rows)

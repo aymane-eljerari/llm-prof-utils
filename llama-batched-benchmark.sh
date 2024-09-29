@@ -1,6 +1,4 @@
 
-
-
 # # #!/bin/bash
 
 # # Check if the correct number of arguments is provided
@@ -39,10 +37,10 @@
 #!/bin/bash
 
 # Array of quant values
-quants=("F16" "Q8_0" "Q4_1")
+quants=("Q8_0" "Q4_1")
 
 # Array of split modes
-split_modes=("none" "layer" "row")
+split_modes=("none" "layer")
 
 # Iterate through each combination of quant and split mode
 for quant in "${quants[@]}"; do
@@ -52,12 +50,12 @@ for quant in "${quants[@]}"; do
 
     # Run the llama-batched-bench command with the --log-file parameter and save the log to the temp file
     ../llama.cpp/llama-batched-bench \
-      -m ../llama.cpp/models/llama3/Meta-Llama-3-8B-Instruct-"$quant".gguf \
-      -c 2048 -b 2048 -ub 512 \
-      -npp 32,64,128,256,512,1024,2048 \
-      -ntg 64,128,512,1024,2048 \
-      -npl 1,2,4,8,16,32,64,128,256 \
-      -ngl 50 -pps -sm "$split_mode" \
+      -m ../llama.cpp/models/llama3/Meta-Llama-3-8B-Instruct-$quant.gguf \
+      -c 16384 -b 1024 -ub 256 \
+      -npp 32,64,128,256,512 \
+      -ntg 32,64,128,256 \
+      -npl 1,2,4,8,16,32,64,128,256,512 \
+      -ngl 50 -pps -mg 0 -sm $split_mode \
       --log-file "$tmp_file"
 
     # Pass the content of the temporary file to the Python script
